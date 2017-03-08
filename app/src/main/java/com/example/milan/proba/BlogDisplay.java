@@ -2,16 +2,11 @@ package com.example.milan.proba;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.webkit.WebView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,7 +17,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class BlogDisplay extends AppCompatActivity {
-    WebView webview;
+    private WebView webview;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,26 +34,22 @@ public class BlogDisplay extends AppCompatActivity {
                 uri= extras.getString("Uri");
                 sharedpreferences.edit().putString("Uri",uri).commit();
             }
-            Log.d("MP","radi");
         } else {
             uri= sharedpreferences.getString("Uri",null);
-            Log.d("MP","ne radi");
         }
         if(uri==null || sharedpreferences.getString("token",null)==null)
             finish();
 
 
-        if(!isNetworkAvailable()) {
+        if(!NetworkCheck.isNetworkAvailable(this)) {
             webview.loadData("<p>No internet connection</p>","text/html",null);
-            Log.d("MP","nema neta");
         }
 
         new AsyncTask<String,Void,String>(){
 
             protected String doInBackground(String... Url) {
-                while(!isNetworkAvailable()){
+                while(!NetworkCheck.isNetworkAvailable(BlogDisplay.this)){
                     try {
-                        Log.d("MP","nema neta bre");
                         Thread.currentThread().sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -66,7 +57,6 @@ public class BlogDisplay extends AppCompatActivity {
                 }
                 String url=Url[0];
                 URL object= null;
-                Log.d("MP","radiiiii");
                 try {
                     object = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) object.openConnection();
@@ -112,11 +102,5 @@ public class BlogDisplay extends AppCompatActivity {
             }
 
         }.execute(uri);
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

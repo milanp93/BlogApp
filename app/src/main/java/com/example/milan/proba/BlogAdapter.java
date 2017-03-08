@@ -74,29 +74,17 @@ public class BlogAdapter extends BaseAdapter implements ListAdapter {
                 try
 
                 {
-                    Log.d("MP", "radi1" + imageUrl);
                     url = new URL(imageUrl);
-                    Log.d("MP", "radi2");
                     HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    Log.d("MP", "radi3");
                     con.setRequestProperty("Content-Type", "application/json");
-                    Log.d("MP", "radi4");
                     con.setRequestProperty("Accept", "application/json");
-                    Log.d("MP", "radi5");
                     SharedPreferences sharedpreferences = context.getSharedPreferences("com.example.milan.proba", Context.MODE_PRIVATE);
-                    Log.d("MP", "radi6");
                     con.setRequestProperty("X-Authorize", sharedpreferences.getString("token", ""));
-                    Log.d("MP", "radi7");
                     con.setRequestMethod("GET");
-                    Log.d("MP", "radi8");
                     con.setDoOutput(false);
-                    Log.d("MP", "radi9");
                     con.setDoInput(true);
-                    Log.d("MP", "radi10");
                     con.connect();
-                    Log.d("MP", "radi11");
                     Bitmap bmp = BitmapFactory.decodeStream(con.getInputStream());
-                    Log.d("MP", "radi12");
                     return bmp;
                 }
                 catch(Exception e)

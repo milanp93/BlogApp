@@ -39,9 +39,8 @@ public class BlogList extends AppCompatActivity {
 
         TextView internetNotification = (TextView) findViewById(R.id.internet_notification);
 
-        if(!isNetworkAvailable()) {
+        if(!NetworkCheck.isNetworkAvailable(this)) {
             internetNotification.setVisibility(View.VISIBLE);
-            Log.d("MP","nema neta");
         }
 
 
@@ -52,7 +51,7 @@ public class BlogList extends AppCompatActivity {
                 super.onPreExecute();
                 // Showing progress dialog
                 pDialog = new ProgressDialog(BlogList.this);
-                if(!isNetworkAvailable())
+                if(!NetworkCheck.isNetworkAvailable(BlogList.this))
                     pDialog.setMessage("No internet connection");
                 else
                     pDialog.setMessage("Please wait...");
@@ -61,20 +60,15 @@ public class BlogList extends AppCompatActivity {
 
             }
             protected String doInBackground(Void... params) {
-                while(!isNetworkAvailable()){
+                while(!NetworkCheck.isNetworkAvailable(BlogList.this)){
                     try {
-                        Log.d("MP","nema neta bre");
                         Thread.currentThread().sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
                 }
-                Log.d("MP","radiiiii1");
-                //pDialog.setMessage("Please wait...");
-                Log.d("MP","radiiiii2");
                 String url="http://blogsdemo.creitiveapps.com:16427/blogs";
                 URL object= null;
-                Log.d("MP","radiiiii3");
                 try {
                     object = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) object.openConnection();
@@ -167,12 +161,5 @@ public class BlogList extends AppCompatActivity {
                 }
             }
         });
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

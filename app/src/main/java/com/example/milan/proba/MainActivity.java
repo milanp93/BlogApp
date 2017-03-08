@@ -26,17 +26,16 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
     private AsyncTask<Void,Void,Integer> login;
-    EditText emailText;
-    EditText passwordText;
-    Button loginButton;
-    String email;
-    String password;
-    ProgressDialog progressDialog;
+    private EditText emailText;
+    private EditText passwordText;
+    private Button loginButton;
+    private String email;
+    private String password;
+    private ProgressDialog progressDialog;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.d("MP","radiiiii");
         SharedPreferences sharedpreferences = MainActivity.this.getSharedPreferences("com.example.milan.proba", Context.MODE_PRIVATE);
         if(sharedpreferences.getString("token",null)!=null){
             Intent intent = new Intent(getApplicationContext(), BlogList.class);
@@ -61,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         if(!validate())
             return;
 
-        if(!isNetworkAvailable()){
+        if(!NetworkCheck.isNetworkAvailable(this)){
             Toast.makeText(getBaseContext(),"No internet conection",Toast.LENGTH_LONG).show();
             return;
         }
@@ -108,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             protected Integer doInBackground(Void... params) {
                 String url="http://blogsdemo.creitiveapps.com:16427/login";
                 URL object= null;
-                Log.d("MP","radiiiii");
                 try {
                     object = new URL(url);
                     HttpURLConnection con = (HttpURLConnection) object.openConnection();
@@ -122,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
 
                     cred.put("email",email);//"candidate@creitive.com");
                     cred.put("password", password);//"1234567");
-                    Log.d("MP",email+" radiiiii7 "+password);
 
                     OutputStreamWriter wr = new OutputStreamWriter(con.getOutputStream());
                     wr.write(cred.toString());
@@ -145,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
                         sharedpreferences.edit().putString("token",json.getString("token")).commit();
 
                         Log.d("MP",sb.toString());
-                        Log.d("MPPP",sharedpreferences.getString("token",null));
+                        Log.d("MP",sharedpreferences.getString("token",null));
                         return 1;
                     } else {
                         progressDialog.dismiss();
@@ -178,11 +175,5 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-    }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
