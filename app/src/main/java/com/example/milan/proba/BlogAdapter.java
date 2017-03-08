@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -65,41 +67,8 @@ public class BlogAdapter extends BaseAdapter implements ListAdapter {
         TextView titleView = (TextView) view.findViewById(R.id.list_blog_title);
         TextView descriptionView = (TextView) view.findViewById(R.id.list_blog_description);
         iconView = (ImageView) view.findViewById(R.id.list_blog_icon);
+        Picasso.with(context).load(imageUrl).resize(100,100).centerCrop().into(iconView);
 
-        url = null;
-        new AsyncTask<Void,Void,Bitmap>() {
-            @Override
-            protected Bitmap doInBackground(Void... params) {
-
-                try
-
-                {
-                    url = new URL(imageUrl);
-                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
-                    con.setRequestProperty("Content-Type", "application/json");
-                    con.setRequestProperty("Accept", "application/json");
-                    SharedPreferences sharedpreferences = context.getSharedPreferences("com.example.milan.proba", Context.MODE_PRIVATE);
-                    con.setRequestProperty("X-Authorize", sharedpreferences.getString("token", ""));
-                    con.setRequestMethod("GET");
-                    con.setDoOutput(false);
-                    con.setDoInput(true);
-                    con.connect();
-                    Bitmap bmp = BitmapFactory.decodeStream(con.getInputStream());
-                    return bmp;
-                }
-                catch(Exception e)
-                {
-                    Log.d("MP", e.toString());
-                }
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(Bitmap bitmap) {
-                if(bitmap!=null)
-                    iconView.setImageBitmap(bitmap);
-            }
-        }.execute();
         titleView.setText(title);
         descriptionView.setText(Html.fromHtml(description));
 

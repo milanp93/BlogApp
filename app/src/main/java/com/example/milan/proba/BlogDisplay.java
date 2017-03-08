@@ -6,6 +6,8 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
+import android.view.WindowManager;
 import android.webkit.WebView;
 
 import org.json.JSONException;
@@ -22,6 +24,8 @@ public class BlogDisplay extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         webview = new WebView(this);
+        webview.getSettings().setUseWideViewPort(true);
+        webview.getSettings().setLoadWithOverviewMode(true);
         setContentView(webview);
         //setContentView(R.layout.activity_blog_display);
         String uri;
@@ -32,7 +36,7 @@ public class BlogDisplay extends AppCompatActivity {
                 uri= null;
             } else {
                 uri= extras.getString("Uri");
-                sharedpreferences.edit().putString("Uri",uri).commit();
+                sharedpreferences.edit().putString("Uri",uri).apply();
             }
         } else {
             uri= sharedpreferences.getString("Uri",null);

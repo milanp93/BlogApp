@@ -88,7 +88,7 @@ public class BlogList extends AppCompatActivity {
                                 new InputStreamReader(con.getInputStream(), "utf-8"));
                         String line = null;
                         while ((line = br.readLine()) != null) {
-                            sb.append(line + "\n");
+                            sb.append(line).append("\n");
                         }
                         br.close();
                         Log.d("MP",sb.toString());
